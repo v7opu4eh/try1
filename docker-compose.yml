@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  # Сервис 1: База данных PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_pass
+      POSTGRES_DB: devops_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - devops_network
+
+  # Сервис 2: Наше FastAPI приложение (порт 8000 теперь НЕ проброшен наружу!)
+  app:
+    build: .
+    container_name: fastapi_app
+    restart: always
+    environment:
+      POSTGRES_USER: devops_user
+      POSTGRES_PASSWORD: devops_pass
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: devops_db
+    depends_on:
+      - db
+    networks:
+      - devops_network
+
+  # Сервис 3: Reverse Proxy на базе Nginx (Единственная внешняя точка входа на порту 80)
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_proxy
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - devops_network
+
+volumes:
+  postgres_data:
+
+networks:
+  devops_network:
+    driver: bridge
