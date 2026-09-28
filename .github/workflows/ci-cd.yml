@@ -34,7 +34,7 @@ jobs:
   # ДЖОБ 2: Сборка и публикация Docker-образа
   build-and-push:
     needs: lint-and-test  # Запускается ТОЛЬКО после успешного прохождения первого джоба
-    runs-on: ubuntu-late
+    runs-on: ubuntu-latest
     steps:
       - name: Чекаут кода
         uses: actions/checkout@v4
