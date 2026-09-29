@@ -1,11 +1,12 @@
 import os
 from fastapi import FastAPI
 from sqlalchemy import create_engine, text
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(title="DevOps Pet Project")
 
 # Получаем настройки подключения к БД из переменных окружения (Environment Variables)
-DB_USER = os.getenv("POSTGRES_USER", "devops_user")
+DB_USER = os.getenv("POSTGRES_USER", "devops_user") 
 DB_PASSWORD = os.getenv("POSTGRES_PASSWORD", "devops_pass")
 DB_HOST = os.getenv("POSTGRES_HOST", "db")
 DB_PORT = os.getenv("POSTGRES_PORT", "5432")
@@ -39,3 +40,13 @@ def db_check():
             "status": "error",
             "details": str(e)
         }
+
+Instrumentator().instrument(app).expose(app)
+
+@app.get("/")
+def read_root():
+    return {"message": "DevOps App is Running!"}
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

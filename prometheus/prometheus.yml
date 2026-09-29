@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 5s # Частота сбора метрик
+
+scrape_configs:
+  - job_name: 'fastapi_app'
+    scrape_interval: 5s
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['app:8000'] # Обращаемся к FastAPI по имени сервиса в Docker
