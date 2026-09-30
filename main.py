@@ -1,7 +1,10 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from sqlalchemy import create_engine, text
 from prometheus_fastapi_instrumentator import Instrumentator
+import time
+import random
+
 
 app = FastAPI(title="DevOps Pet Project")
 
@@ -50,3 +53,16 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/slow")
+def slow_endpoint():
+    delay = random.uniform(0.5, 3)  # Задержка от 0.5 до 2.5 секунд
+    time.sleep(delay)
+    return {"message": f"Response delayed by {delay:.2f} seconds"}
+
+# 2. Эндпоинт со случайной ошибкой 500 (для проверки алертов и ошибок)
+@app.get("/error")
+def error_endpoint():
+    if random.random() < 0.7:  # 70% вероятность ошибки
+        raise HTTPException(status_code=500, detail="Simulated Internal Server Error")
+    return {"message": "Lucky this time! No error."}
