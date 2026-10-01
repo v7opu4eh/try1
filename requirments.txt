@@ -1,5 +1,9 @@
-fastapi==0.110.0
-uvicorn==0.28.0
-psycopg2-binary==2.9.9
-sqlalchemy==2.0.28
-prometheus-fastapi-instrumentator==7.0.0
+fastapi
+uvicorn
+prometheus-fastapi-instrumentator
+sqlalchemy
+psycopg2-binary
+pydantic
+pyjwt
+pwdlib[argon2,bcrypt]
+python-multipart
