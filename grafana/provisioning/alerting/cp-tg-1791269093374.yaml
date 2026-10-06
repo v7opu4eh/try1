@@ -1,0 +1,16 @@
+apiVersion: 1
+contactPoints:
+    - orgId: 1
+      name: tg
+      receivers:
+        - uid: ag0dx5kihx4w1a
+          type: telegram
+          settings:
+            bottoken: 8865356733:AAGTwQOZBT83vLYDMTWfFccYBAVhu4TzCDg
+            chatid: "559042639"
+            disable_notification: false
+            disable_web_page_preview: false
+            message: bobshibka 500 over mnogo
+            message_thread_id: "0"
+            protect_content: false
+          disableResolveMessage: false
