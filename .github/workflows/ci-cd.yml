@@ -9,9 +9,24 @@ on:
     branches: [ "main" ]
 
 jobs:
-  # ДЖОБ 1: Проверка и тестирование кода
   lint-and-test:
     runs-on: ubuntu-latest
+
+    # Запускаем временную БД PostgreSQL для тестов
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: devops_user
+          POSTGRES_PASSWORD: devops_pass
+          POSTGRES_DB: devops_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Чекаут кода из репозитория
@@ -26,14 +41,23 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirments.txt
+          pip install pytest httpx
 
       - name: Базовая проверка синтаксиса (Linter)
         run: |
           python -m py_compile main.py
+
       - name: Запуск тестов Pytest
+        env:
+          POSTGRES_USER: devops_user
+          POSTGRES_PASSWORD: devops_pass
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: devops_db
+          SECRET_KEY: testsecretkey
         run: |
-          pip install pytest httpx
           pytest -v
+          
   # ДЖОБ 2: Сборка и публикация Docker-образа
   build-and-push:
     needs: lint-and-test  # Запускается ТОЛЬКО после успешного прохождения первого джоба
