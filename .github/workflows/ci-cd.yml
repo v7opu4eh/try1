@@ -30,7 +30,10 @@ jobs:
       - name: Базовая проверка синтаксиса (Linter)
         run: |
           python -m py_compile main.py
-
+      - name: Запуск тестов Pytest
+        run: |
+          pip install pytest httpx
+          pytest -v
   # ДЖОБ 2: Сборка и публикация Docker-образа
   build-and-push:
     needs: lint-and-test  # Запускается ТОЛЬКО после успешного прохождения первого джоба
