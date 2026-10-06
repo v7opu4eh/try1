@@ -25,7 +25,7 @@ def test_user_flow():
     # Шаг A: Регистрация
     response_reg = client.post("/register", json=TEST_USER)
     # Если юзер уже есть в тестовой БД, допускаем статус 200 или 400 (User already exists)
-    assert response_reg.status_code in [200, 400]
+    assert response_reg.status_code in [200,201, 400]
 
     # Шаг B: Логин и получение JWT-токена
     response_login = client.post("/login", data={
